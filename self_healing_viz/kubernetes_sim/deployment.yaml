@@ -1,0 +1,46 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neuroretailx-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: neuroretailx
+  template:
+    metadata:
+      labels:
+        app: neuroretailx
+    spec:
+      containers:
+      - name: neuroretailx
+        image: pavithracp1909/neuroretailx:latest
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+
+---
+
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: neuroretailx-service
+spec:
+  type: NodePort  # ✅ Correct location for NodePort
+  selector:
+    app: neuroretailx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+      nodePort: 30080  # ✅ Must be between 30000–32767
+
