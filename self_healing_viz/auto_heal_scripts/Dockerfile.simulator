@@ -1,0 +1,4 @@
+FROM alpine/k8s:1.25.0
+COPY simulate_attack.sh monitor_logs.py /scripts/
+RUN chmod +x /scripts/*
+CMD ["sh", "-c", "while true; do /scripts/simulate_attack.sh; sleep 60; done"]
