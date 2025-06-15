@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Cyber Range</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Libraries -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/3d-force-graph"></script>
+</head>
+<body>
+    <div class="cyber-container">
+        <!-- Header -->
+        <header class="cyber-header">
+            <h1 class="cyber-glitch" data-text="KUBERNETES CYBER RANGE">KUBERNETES CYBER RANGE</h1>
+            <div class="status-bar">
+                <div id="cluster-health" class="health-indicator healthy">
+                    <span>CLUSTER STATUS: </span>
+                    <span class="status-text">OPERATIONAL</span>
+                </div>
+                <div class="time-display" id="current-time"></div>
+            </div>
+        </header>
+
+        <!-- Main dashboard -->
+        <div class="dashboard-grid">
+            <!-- Graph-Based Visualizer -->
+            <div class="dashboard-card full-width">
+                <h2 class="card-title">THREAT TIMELINE</h2>
+                <div id="attack-graph" style="width: 100%; height: 500px;"></div>
+            </div>
+
+            <!-- Attack Controls -->
+            <div class="dashboard-card">
+                <h2 class="card-title">ATTACK SIMULATOR</h2>
+                <div class="attack-controls" id="attack-controls">
+                    <button class="cyber-button ransomware" data-attack="ransomware">
+                        <img src="assets/attack-icons/ransomware.svg" alt="">
+                        RANSOMWARE
+                    </button>
+                    <button class="cyber-button bruteforce" data-attack="bruteforce">
+                        <img src="assets/attack-icons/bruteforce.svg" alt="">
+                        BRUTE FORCE
+                    </button>
+                    <button class="cyber-button ddos" data-attack="ddos">
+                        <img src="assets/attack-icons/ddos.svg" alt="">
+                        DDoS
+                    </button>
+                    <button class="cyber-button insider" data-attack="insider">
+                        <img src="assets/attack-icons/insider.svg" alt="">
+                        INSIDER THREAT
+                    </button>
+                    <button class="cyber-button nuclear" id="full-simulation">
+                        <img src="assets/attack-icons/nuclear.svg" alt="">
+                        FULL SIMULATION
+                    </button>
+                </div>
+            </div>
+
+            <!-- Real-time Metrics -->
+            <div class="dashboard-card">
+                <h2 class="card-title">REAL-TIME METRICS</h2>
+                <div class="metrics-container">
+                    <div class="metric">
+                        <div class="metric-label">CPU LOAD</div>
+                        <div class="metric-value" id="cpu-load">0%</div>
+                        <div class="metric-gauge">
+                            <div class="gauge-fill" id="cpu-gauge"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">MEMORY USAGE</div>
+                        <div class="metric-value" id="memory-usage">0%</div>
+                        <div class="metric-gauge">
+                            <div class="gauge-fill" id="memory-gauge"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">POD COUNT</div>
+                        <div class="metric-value" id="pod-count">1</div>
+                        <div class="metric-gauge">
+                            <div class="gauge-fill" id="pod-gauge"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Stream -->
+            <div class="dashboard-card full-width">
+                <h2 class="card-title">EVENT STREAM</h2>
+                <div class="event-stream" id="event-stream">
+                    <div class="event-timeline" id="event-timeline"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Scripts -->
+
+<script src="config.js"></script>
+<script src="components/attack-graph.js"></script> <!-- Make sure this loads BEFORE dashboard.js -->
+<script src="components/attack-controls.js"></script>
+<script src="dashboard.js"></script>
+<script src="fetchEvents.js"></script>
+
+</body>
+</html>
+
