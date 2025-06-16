@@ -1,32 +1,27 @@
 import json
-from datetime import datetime
-import os
+from pathlib import Path
 
-BAN_LIST_FILE = "banned_ips.json"
-LOG_FILE = "app/logs/access.log"
+BANNED_IPS_PATH = Path("banned_ips.json")
+IP_METADATA_PATH = Path("ip_metadata.json")
 
-# Load or initialize banned IP list
-if not os.path.exists(BAN_LIST_FILE):
-    with open(BAN_LIST_FILE, "w") as f:
-        json.dump([], f)
+def is_ip_banned(ip: str) -> bool:
+    if not BANNED_IPS_PATH.exists():
+        return False
+    with open(BANNED_IPS_PATH) as f:
+        return ip in json.load(f)
 
-def is_ip_banned(ip):
-    with open(BAN_LIST_FILE) as f:
-        banned = json.load(f)
-    return ip in banned
-
-def ban_ip(ip):
-    with open(BAN_LIST_FILE) as f:
-        banned = json.load(f)
+def ban_ip(ip: str):
+    banned = []
+    if BANNED_IPS_PATH.exists():
+        banned = json.load(open(BANNED_IPS_PATH))
     if ip not in banned:
         banned.append(ip)
-        with open(BAN_LIST_FILE, "w") as fw:
-            json.dump(banned, fw)
+        json.dump(banned, open(BANNED_IPS_PATH, "w"))
 
+def log_ip_metadata(ip: str, metadata: dict):
+    data = {}
+    if IP_METADATA_PATH.exists():
+        data = json.load(open(IP_METADATA_PATH))
+    data[ip] = metadata
+    json.dump(data, open(IP_METADATA_PATH, "w"), indent=4)
 
-def log_access(request, trap=False):
-    ip = request.client.host
-    ua = request.headers.get("user-agent", "none")
-    path = request.url.path
-    with open(LOG_FILE, "a") as f:
-        f.write(f"[{datetime.now()}] IP: {ip} | Path: {path} | Trap: {trap} | UA: {ua}\n")
