@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+numpy
+hashlib; python_version < "3.10"  # Built-in in most versions
+scikit-learn
+pydantic
+python-multipart
