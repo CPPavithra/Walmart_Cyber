@@ -1,19 +1,19 @@
-# main.py
-
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from joblib import load
 import numpy as np
+import asyncio
 
+# Initialize FastAPI
 app = FastAPI()
 
-# Enable CORS for frontend
+# Enable CORS for Vite frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # for dev only
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 # Load models
@@ -21,7 +21,10 @@ xgb_model = load("ensemble_model/xgb_model.joblib")
 rf_model = load("ensemble_model/rf_model.joblib")
 scaler = load("ensemble_model/scaler.joblib")
 
-# Define input structure
+# WebSocket manager
+connected_clients = []
+
+# Data model
 class Activity(BaseModel):
     session_id: str
     clicks_per_session: float
@@ -38,8 +41,7 @@ class Activity(BaseModel):
     repeated_paths_ratio: float
 
 @app.post("/analyze")
-def analyze_user(data: Activity):
-    # Arrange input features
+async def analyze_user(data: Activity):
     features = np.array([[
         data.clicks_per_session,
         data.session_duration,
@@ -55,20 +57,35 @@ def analyze_user(data: Activity):
         data.repeated_paths_ratio
     ]])
 
-    # Scale
     scaled = scaler.transform(features)
-
-    # Predict
     xgb_pred = xgb_model.predict(scaled)[0]
     rf_pred = rf_model.predict(scaled)[0]
-
-    # Ensemble: Union
     ensemble_pred = int(xgb_pred or rf_pred)
 
-    return {
-        "session_id": data.session_id,
+
+    result = {
+        **data.model_dump(),  # includes all input fields!
         "prediction": "bot" if ensemble_pred == 1 else "human",
         "xgb_pred": int(xgb_pred),
         "rf_pred": int(rf_pred)
     }
+    await broadcast_json(result)
+    return result
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    connected_clients.append(websocket)
+    try:
+        while True:
+            await websocket.receive_text()  # keeps connection open
+    except WebSocketDisconnect:
+        connected_clients.remove(websocket)
+
+async def broadcast_json(message: dict):
+    for client in connected_clients:
+        try:
+            await client.send_json(message)
+        except:
+            pass  # skip disconnected clients
 
