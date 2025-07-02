@@ -1,0 +1,17 @@
+/* src/components/fraud-detection/FraudDetectionChart.css */
+.fraud-chart {
+  margin-bottom: 2rem;
+}
+
+.fraud-chart h3 {
+  color: #555;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.chart-container {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: var(--card-radius);
+  border: 1px solid #eee;
+}

@@ -1,0 +1,62 @@
+/* src/components/fraud-detection/FraudDetectionTable.css */
+.fraud-table {
+  margin-top: 2rem;
+}
+
+.fraud-table h3 {
+  color: #555;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background-color: #f5f7fa;
+  font-weight: 600;
+  color: #555;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+.human-row {
+  background-color: #f5f9f5;
+}
+
+.bot-row {
+  background-color: #fff5f5;
+}
+
+.prediction-tag {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.prediction-tag.human {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.prediction-tag.bot {
+  background-color: #ffebee;
+  color: #c62828;
+}
